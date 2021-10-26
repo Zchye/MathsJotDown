@@ -1,0 +1,80 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % This package is for creating hyper link-style corss references.
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\title{Optimal Wideband Precoder For MIMO}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+\maketitle
+For a MIMO wireless communication, we have sampled transmit signal $x[n]\in\mathbb{C}^M$, receive signal $y[n]\in\mathbb{C}^N$, and a channel $h[n]\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^M\right)$ all with lengths $P$
+$$y[n]=\sum_{n-0}^{P-1}h[n]x[n]$$
+And in the frequency domain we have
+$$Y[k]=H[k]X[k]$$
+where $k=0,\dots,P-1$.
+
+We want to find an approximation of $h[n]$ denoted by $\hat{h}$ such that $y$ and $\hat{h}x$ are as close as possible, or, $Y$ and $\hat{h}X$ as close as possible. Later we will show that these two requirements are equivalent.
+
+Note that $y$ and $Y$ are elements of a $\mbox{Hom}\left(\mathbb{C}^N \right)$-module, $h$ and $H$ are elements of another $\mbox{Hom}\left(\mathbb{C}^N \right)$-module, and $x$ as well as $X$ are elements of a $\mathbb{C}^{M\times M}$-module. To measure how close to elements of a module are, we can define an "inner product" analogy to the usual inner product defined on Hilbert spaces.
+\begin{definition}[Inner product on $\mbox{Hom}\left(\mathbb{C}^N \right)$-modules]\label{def inner product}
+	An auto-correlation on a $P$-dimensional free $\mbox{Hom}\left(\mathbb{C}^N \right)$-module $\mathcal{M}$ is a operation $\langle\cdot,\cdot\rangle$: $\mathcal{M}\times\mathcal{M}\rightarrow\mbox{Hom}\left(\mathbb{C}^N \right)$
+	$$\langle x,y\rangle=\sum_{n=0}^{P-1}x[n]y[n]^*$$
+	We also refer $C_{xy}$ to $\langle x,y\rangle$ for convenience under some context.
+\end{definition}
+\begin{definition}[Orthogonality on modules]\label{def orthogonality}
+	$x,y\in\mathcal{M}$ are orthogonal if
+	$$\langle x,y\rangle=0$$
+\end{definition}
+It is easy to verify that $\langle x,x\rangle$ is positive semi-definite. Therefore we can define the norm induced by the inner product
+\begin{definition}[Euclidean norm on modules]\label{def norm}
+	The Euclidean norm of $x\in\mathcal{M}$ is 
+	$$||x||=\langle x,x\rangle^{1/2}$$
+\end{definition}
+It is obvious that the norm of any element is positive semi-definite. Hence, there is a partial order $\preceq$ induced by the positive semi-definite cone. And we are able to measure the closeness of two elements in a module by this partial order.
+
+The theorem follows tells us that we can study the closeness in either time domain or frequency domain.
+\begin{theorem}[Extended Parseval's Theorem]\label{thm parseval}
+	$$||X||=\sqrt{P}||x||$$
+	w.r.t. the DFT defined by
+	$$X[k]=\sum_{n=0}^{P-1}x[n]\omega_P^{nk}$$
+	where
+	$$\omega_P^{nk}=e^{-j2\pi nk/P}$$
+\end{theorem}
+\begin{proof}
+	\begin{eqnarray*}
+	||X||^2&=&\sum_{k=0}^{P-1}X[k]X[k]^*\\
+	&=&\sum_{k=0}^{P-1}\left(\sum_{m=0}^{P-1}x[m]\omega_P^{mk} \right)\left(\sum_{n=0}^{P-1}x[n]\omega_P^{nk} \right)^*\\
+	&=&\sum_{k=0}^{P-1}\sum_{m=0}^{P-1}\sum_{n=0}^{P-1}x[m]x[n]^*\omega_P^{(m-n)k}
+	\end{eqnarray*}
+Note that the terms being summed are non-zero only if $m=n$, thus
+$$||X||^2=\sum_{k=0}^{P-1}Px[k]x[k]^*=P||x||^2$$
+completes the proof.
+\end{proof}
+To find the optimal $\hat{h}$ in time domain is equivalent to find it in the frequency domain. This amounts to say that we are trying to approximate the frequency-selective $H[k]$ with a constant $\hat{h}$ over all frequencies.
+
+We need to extend the orthogonality principle to modules. Before that we need another kind of product of elements from different modules.
+\begin{definition}[Cross-correlation]\label{def crosscorrelation}
+	The cross-correlation is a binary operator defined on the product of two modules $\langle\cdot,\cdot\rangle$: $\mathcal{N}\times \mathcal{M}\rightarrow\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$
+	$$\langle x,y\rangle=\sum_{n=0}^{P-1}x[n]y[n]^*$$
+	And we sometimes refer $C_{xy}$ to $\langle x,y\rangle$ for convenience under certain contexts.
+\end{definition}
+When $N=M$, the cross-correlation coincides with auto-correlation.
+\begin{lemma}\label{lemma |z+mux|>=|z|}
+	Let $z\in\mathcal{N}$, $x\in\mathcal{M}$ s.t. $C_{zx}=0$. Then $\forall \mu\in\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$ we have
+	$$||z+\mu x||\succeq||z||$$
+\end{lemma}
+\begin{proof}
+	It is easy to verify that
+	$$||z+\mu x||^2=||z||^2+||\mu x||^2$$
+	and we are done.
+\end{proof}
+It follows from lemma \ref{lemma |z+mux|>=|z|} that every $y\in\mathcal{N}$ can be decomposed into two parts
+$$y=z+\mu x$$
+where $C_{zx}=0$ and $\mu\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^N\right)$
+\end{document}
