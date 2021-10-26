@@ -1,0 +1,84 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % This package is for creating hyper link-style corss references.
+\usepackage{amsmath}
+\usepackage{amsthm}
+\title{Rank Of Sum Of Positive Semidefinite Matrices}
+
+\newtheorem{lemma}{Lemma}
+\begin{document}
+	\maketitle
+	We want to proof 
+	\begin{equation}
+		\mbox{rank}(A+B)\geq\max(\mbox{rank}(A),\mbox{rank}(B)) \label{r(A+B)>=rA+rB}
+	\end{equation}
+	provided that $A,B\in \mbox{S}_+^N$, i.e., positive semidefinite matrices of order $N$.
+
+\begin{lemma}\label{lemma rank(S+I)=N}
+	$\forall S\in\mbox{S}_+^N$
+	\begin{equation*}
+		\mbox{rank}(S+I_N)=N
+	\end{equation*}
+\end{lemma}
+\begin{proof}
+	Apply spectral decomposition on $S$, $\exists U\in \mbox{U}(N)$ (group of unitary matrices) and diagonal matrices $D$ with nonnegative entries, such that
+	$$
+	S+I=U(D+I)U^*
+	$$
+	where the diagonal entries of $D+I$ are strictly positive. It follows from that unitary matrices do not change rank.
+\end{proof}
+\begin{lemma}\label{lemma A=PP*}
+	$\forall A\in\mbox{S}_+^N$, $\exists P\in\mbox{U}(r)$ s.t. 
+	$$
+	\tilde{A}=PP^*
+	$$
+	where $r=\mbox{rank}(A)$ and $\tilde{A}=A|_{V/\ker A}$.
+\end{lemma}
+\begin{proof}
+	First apply spetral decopomsition on $\tilde{A}$
+	$$ \tilde{A} = UDU^* $$
+	Then let $L=\sqrt{D}$ and $P=UL$
+	completing the proof.
+\end{proof}
+
+Now we are able to prove the inequality of interest.
+\begin{proof}
+	(Rank inequality of sum of positive semidefinite matrices)
+	
+	Suppose $A$ is non-trivial, otherwise the inequality trivially holds. Restrict $A$ and $B$ on $V/\ker A$ to get $\tilde{A}$ and $\tilde{B}$. Then apply lemma \ref{lemma A=PP*}
+	\begin{equation}
+		\tilde{A}+\tilde{B}=P(I+P^*\tilde{B}P)P^*
+		\label{eqn SVD(A+B)}
+	\end{equation}
+	It follows from lemma \ref{lemma rank(S+I)=N} that
+	$$\mbox{rank} (\tilde{A}+\tilde{B})=\mbox{rank}(I)=\mbox{rank}(\tilde{A})$$
+	Since $A+B$ might not be trivial on $\ker A$, we have
+	$$\mbox{rank}(A+B)\geq \mbox{rank}(\tilde{A}+\tilde{B})$$
+	Also note that
+	$$\mbox{rank}(A)= \mbox{rank}(\tilde{A})$$
+	and we are done.
+\end{proof}
+Equation \ref{eqn SVD(A+B)} also provides us a means to study the relationship between the spectral decomposition of (A+B) and of A and B respectively.
+
+We have a more elegant proof though, by introducing a lemma first
+\begin{lemma}\label{lemma kerA}
+	$\forall v\in V$, $v^*Av=0\Leftrightarrow v\in\ker A$
+\end{lemma}
+\begin{proof}
+	$\Rightarrow$ is obvious. 
+	
+	$\Leftarrow$
+	follows from lemma \ref{lemma A=PP*}, if $\tilde{A}$ is non-trivial, then it is positive definite. This completes the proof.
+\end{proof}
+Now the proof follows
+\begin{proof}
+	$\forall A\in \mbox{S}_+^N$, define $N(A)$ to be
+	$$N(A)=\{v\in V|v^*Av=0 \}$$
+	It is easy to verify that
+	$$N(A+B)=N(A)\cap N(B)$$
+	Apply lemma \ref{lemma kerA}
+	$$\ker(A+B)=\ker A\cap\ker B\subseteq\ker A$$
+	which implies
+	$$\mbox{rank}(A+B)\geq\mbox{rank}(A)$$
+	which completes the proof.
+\end{proof}
+\end{document}
