@@ -41,7 +41,7 @@ It is obvious that the norm of any element is positive semi-definite. Hence, the
 The theorem follows tells us that we can study the closeness in either time domain or frequency domain.
 \begin{theorem}[Extended Parseval's Theorem]\label{thm parseval}
 	$$||X||=\sqrt{P}||x||$$
-	w.r.t. the DFT defined by
+	with the DFT defined by
 	$$X[k]=\sum_{n=0}^{P-1}x[n]\omega_P^{nk}$$
 	where
 	$$\omega_P^{nk}=e^{-j2\pi nk/P}$$
@@ -52,7 +52,7 @@ The theorem follows tells us that we can study the closeness in either time doma
 	&=&\sum_{k=0}^{P-1}\left(\sum_{m=0}^{P-1}x[m]\omega_P^{mk} \right)\left(\sum_{n=0}^{P-1}x[n]\omega_P^{nk} \right)^*\\
 	&=&\sum_{k=0}^{P-1}\sum_{m=0}^{P-1}\sum_{n=0}^{P-1}x[m]x[n]^*\omega_P^{(m-n)k}
 	\end{eqnarray*}
-Note that the terms being summed are non-zero only if $m=n$, thus
+Note that the summands of the outmost summation are non-zero only if $m=n$, thus
 $$||X||^2=\sum_{k=0}^{P-1}Px[k]x[k]^*=P||x||^2$$
 completes the proof.
 \end{proof}
@@ -74,7 +74,45 @@ When $N=M$, the cross-correlation coincides with auto-correlation.
 	$$||z+\mu x||^2=||z||^2+||\mu x||^2$$
 	and we are done.
 \end{proof}
+Back to the main goal of this article, we want to approximate $y$ with $\mu x$ by an optimal $\mu$ so that
+$$||y-\mu x||$$
+is minimum w.r.t. the partial order induced by positive semi-definite cone.
+
 It follows from lemma \ref{lemma |z+mux|>=|z|} that every $y\in\mathcal{N}$ can be decomposed into two parts
 $$y=z+\mu x$$
-where $C_{zx}=0$ and $\mu\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^N\right)$
+where $C_{zx}=0$ and $\mu\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^N\right)$ and the $\mu$ is what we are looking for and the minimun norm is $||z||$.
+
+The next question is how do we find $\mu$ and $z$ given $y$ and $x$.
+
+We see that
+$$\langle y,x\rangle= \langle z,x\rangle+\langle \mu x,x\rangle=\mu\langle x,x\rangle$$
+or simply
+\begin{equation}\label{eqn Cxy=muCxx}
+	C_{yx}=\mu C_{xx}
+\end{equation}
+The unique $\mu$ can be found if $C_{xx}$ is invertible. But what if it is not?
+
+The existance of $\mu$ is asured by the nature of $\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$. The uniqueness is not asured, in fact it should not be unique. $C_{xx}$ not being invertible means $\ker C_{xx}$ is non-trivial. If $\mu$ is a solution to equation \ref{eqn Cxy=muCxx}, then $\forall \beta\in\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$ such that the restriction of $\beta$ on $\left(\ker C_{xx} \right)^{\perp}$ is trivial, $\mu + \beta$ is also a solution to equation \ref{eqn Cxy=muCxx}.
+
+We could use pusedo inverse of $C_{xx}$ to find the solution such that the standard matrix norm $\mbox{tr}(\mu^*\mu)$ is minimum. And the psuedo inverse of a positive semi-definite matrix can be calculated by first applying spectral decomposition and then replacing the non-zero singular values by their reciprocals and leaving the zero ones unchanged.
+
+But we are not content with the psuedo inverse as we want to know why it works at all.
+
+The reasoning is not hard. We restrict $C_{yx}$ and $C_{xx}$ on $\mathbb{C}^M/\ker C_{xx}$ to get $\tilde{C}_{yx}$ and $\tilde{C}_{xx}$ respectively. Then $\tilde{C}_{xx}$ is invertible by isomorphism theorem even if it is trivial (maps from a singletom to another singleton). Hence we have
+$$\tilde{\mu}=\tilde{C}_{yx}\tilde{C}_{xx}^{-1}\in\mbox{Hom}\left(\mathbb{C}^M/\ker C_{xx}, \mathbb{C}^N \right)$$
+where $\tilde{\mu}$ can be easily extended on $\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$ by assigning any value to $\mu$ on $\ker C_{xx}$. To make the standard matrix norm minimum, we can simply assign zero on $\ker C_{xx}$. The reasoning is similar to the proof of lemma \ref{lemma |z+mux|>=|z|}. Note that $\tilde{C}_{xx}$ is from discarding the zero singular values and the corresponding eigenvectors of $C_{xx}$. Thus the mechanism of psuedo inverse makes sense.
+
+Remember our goal is to find $\hat{h}$. We do this in the frequency domain. Let $(\cdot )^{\dagger}$ denote taking psuedo inverse, then
+$$\hat{h}=C_{YX}C_{XX}^{\dagger}=\left(\sum_{k=0}^{P-1}H[k]X[k]X[k]^* \right)\left(||X||^2 \right)^{\dagger}$$
+In SISO case, i.e., $M=N=1$, this becomes
+$$\hat{h}=\left(\sum_{k=0}^{P-1}H[k]|X[k]|^2 \right)||X||^{-2}$$
+We see that the optimal wideband precoder is closely related to the transmit signal.
+
+Another quesiton: What is the practical meaning of the optimality in $\hat{h}$ w.r.t. the partial order on $\mbox{S}_+^N$ (positive semi-definite matrices of order $N$)? 
+
+Since the trace of a positive semi-definite matrix is non-negative, it preserves order. And $\mbox{tr}\left(yy^*\right)$ is but the energy of $y$. Hence $\hat{h}$ is also optimal in the sense that it minimizes the error energy.
+
+In MATLAB 2021a 5G Toolbox, however, it simply calculates the wideband precoder by linear average of $H[k]$'s over frequency indices. This unfortunately does not make good sense. For SISO case, it is OK since the linear average of $H[k]$ corresponds to $X[k]$ being constant in the frequency domian, or equivalently, impulse signal in the time domain. However for MIMO case, lieanr average of $H[k]$ amounts to say that
+$$X[k]X[k]^*\left(||X||^2 \right)^{\dagger}=\frac{1}{P}I_M,\ \forall k$$
+which implies $X[k]$ is constant over $k$. This is impossible because the rank of LHS is one whereas $M$ for RHS.
 \end{document}
