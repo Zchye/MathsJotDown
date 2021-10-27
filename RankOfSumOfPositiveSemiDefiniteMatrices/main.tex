@@ -2,6 +2,7 @@
 \usepackage{hyperref} % This package is for creating hyper link-style corss references.
 \usepackage{amsmath}
 \usepackage{amsthm}
+\usepackage{mathrsfs}
 \title{Rank Of Sum Of Positive Semidefinite Matrices}
 
 \newtheorem{lemma}{Lemma}
@@ -71,10 +72,10 @@ We have a more elegant proof though, by introducing a lemma first
 \end{proof}
 Now the proof follows
 \begin{proof}
-	$\forall A\in \mbox{S}_+^N$, define $N(A)$ to be
-	$$N(A)=\{v\in V|v^*Av=0 \}$$
+	$\forall A\in \mbox{S}_+^N$, define $\mathscr{N}(A)$ to be
+	$$\mathscr{N}(A)=\{v\in V|v^*Av=0 \}$$
 	It is easy to verify that
-	$$N(A+B)=N(A)\cap N(B)$$
+	$$\mathscr{N}(A+B)=\mathscr{N}(A)\cap \mathscr{N}(B)$$
 	Apply lemma \ref{lemma kerA}
 	$$\ker(A+B)=\ker A\cap\ker B\subseteq\ker A$$
 	which implies
