@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.4.12)  27 OCT 2021 01:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2021.4.12)  27 OCT 2021 02:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -309,11 +309,11 @@ Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 118.
 Here is how much of TeX's memory you used:
  5215 strings out of 480608
  78663 string characters out of 5907536
- 344122 words of memory out of 5000000
+ 345122 words of memory out of 5000000
  21020 multiletter control sequences out of 15000+600000
  540535 words of font info for 56 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 34i,7n,29p,544b,367s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 34i,7n,29p,730b,367s stack positions out of 5000i,500n,10000p,200000b,80000s
 <d:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb><d:/tex
 live/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb><d:/texlive/2020
 /texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb><d:/texlive/2020/texmf-di
@@ -324,7 +324,7 @@ c/amsfonts/cm/cmr17.pfb><d:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts
 pfb><d:/texlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb><d:/te
 xlive/2020/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb><d:/texlive/202
 0/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb>
-Output written on main.pdf (5 pages, 125428 bytes).
+Output written on main.pdf (5 pages, 125602 bytes).
 PDF statistics:
  87 PDF objects out of 1000 (max. 8388607)
  68 compressed objects within 1 object stream

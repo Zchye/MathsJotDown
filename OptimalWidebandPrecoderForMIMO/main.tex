@@ -21,11 +21,11 @@ where $k=0,\dots,P-1$.
 
 We want to find an approximation of $h[n]$ denoted by $\hat{h}$ such that $y$ and $\hat{h}x$ are as close as possible, or, $Y$ and $\hat{h}X$ as close as possible. Later we will show that these two requirements are equivalent.
 
-Note that $y$ and $Y$ are elements of a $\mbox{Hom}\left(\mathbb{C}^N \right)$-module, $h$ and $H$ are elements of another $\mbox{Hom}\left(\mathbb{C}^N \right)$-module, and $x$ as well as $X$ are elements of a $\mbox{Hom}\left(\mathbb{C}^M \right)$-module. To measure how close to elements of a module are, we can define an "inner product" analogy to the usual inner product defined on Hilbert spaces.
+Note that $y$ and $Y$ are elements of a $\mbox{Hom}\left(\mathbb{C}^N \right)$-module, $h$ and $H$ are elements of another $\mbox{Hom}\left(\mathbb{C}^N \right)$-module, and $x$ as well as $X$ are elements of a $\mbox{Hom}\left(\mathbb{C}^M \right)$-module. To measure how close two elements of a module are, we can define an "inner product" analogy to the usual inner product defined on Hilbert spaces.
 \begin{definition}[Inner product on $\mbox{Hom}\left(\mathbb{C}^N \right)$-modules]\label{def inner product}
 	An auto-correlation on a $P$-dimensional free $\mbox{Hom}\left(\mathbb{C}^N \right)$-module $\mathcal{M}$ is a operation $\langle\cdot,\cdot\rangle$: $\mathcal{M}\times\mathcal{M}\rightarrow\mbox{Hom}\left(\mathbb{C}^N \right)$
 	$$\langle x,y\rangle=\sum_{n=0}^{P-1}x[n]y[n]^*$$
-	We also refer $C_{xy}$ to $\langle x,y\rangle$ for convenience under some context.
+	We sometimes write $C_{xy}$ in place of $\langle x,y\rangle$ for convenience in some contexts.
 \end{definition}
 \begin{definition}[Orthogonality on modules]\label{def orthogonality}
 	$x,y\in\mathcal{M}$ are orthogonal if
@@ -62,7 +62,7 @@ We need to extend the orthogonality principle to modules. Before that we need an
 \begin{definition}[Cross-correlation]\label{def crosscorrelation}
 	The cross-correlation is a binary operator defined on the product of two modules $\langle\cdot,\cdot\rangle$: $\mathcal{N}\times \mathcal{M}\rightarrow\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$
 	$$\langle x,y\rangle=\sum_{n=0}^{P-1}x[n]y[n]^*$$
-	And we sometimes refer $C_{xy}$ to $\langle x,y\rangle$ for convenience under certain contexts.
+	And we sometimes write $C_{xy}$ in place of $\langle x,y\rangle$ for convenience in some contexts.
 \end{definition}
 When $N=M$, the cross-correlation coincides with auto-correlation.
 \begin{lemma}\label{lemma |z+mux|>=|z|}
@@ -92,7 +92,7 @@ or simply
 \end{equation}
 The unique $\mu$ can be found if $C_{xx}$ is invertible. But what if it is not?
 
-The existance of $\mu$ is asured by the nature of $\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$. The uniqueness is not asured, in fact it should not be unique. $C_{xx}$ not being invertible means $\ker C_{xx}$ is non-trivial. If $\mu$ is a solution to equation \ref{eqn Cxy=muCxx}, then $\forall \beta\in\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$ such that the restriction of $\beta$ on $\left(\ker C_{xx} \right)^{\perp}$ is trivial, $\mu + \beta$ is also a solution to equation \ref{eqn Cxy=muCxx}.
+The existance of $\mu$ is assured by the nature of $\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$. The uniqueness is not assured, in fact it should not be unique. $C_{xx}$ not being invertible means $\ker C_{xx}$ is non-trivial. And the positive semi-definiteness means $C_{xx}$ is diagonalizable, which further implies $\left(\ker C_{xx} \right)^{\perp}$ is an invariant subspace under $C_{xx}$. It follows that if $\mu$ is a solution to equation \ref{eqn Cxy=muCxx}, then $\forall \beta\in\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$ such that the restriction of $\beta$ on $\left(\ker C_{xx} \right)^{\perp}$ is trivial, $\mu + \beta$ is also a solution to equation \ref{eqn Cxy=muCxx}.
 
 We could use pusedo inverse of $C_{xx}$ to find the solution such that the standard matrix norm $\mbox{tr}(\mu^*\mu)$ is minimum. And the psuedo inverse of a positive semi-definite matrix can be calculated by first applying spectral decomposition and then replacing the non-zero singular values by their reciprocals and leaving the zero ones unchanged.
 
@@ -114,5 +114,5 @@ Since the trace of a positive semi-definite matrix is non-negative, it preserves
 
 In MATLAB 2021a 5G Toolbox, however, it simply calculates the wideband precoder by linear average of $H[k]$'s over frequency indices. This unfortunately does not make good sense. For SISO case, it is OK since the linear average of $H[k]$ corresponds to $X[k]$ being constant in the frequency domian, or equivalently, impulse signal in the time domain. However for MIMO case, lieanr average of $H[k]$ amounts to say that
 $$X[k]X[k]^*\left(||X||^2 \right)^{\dagger}=\frac{1}{P}I_M,\ \forall k$$
-which implies $X[k]$ is constant over $k$. This is impossible because the rank of LHS is one whereas $M$ for RHS.
+which implies $X[k]$ is constant over $k$. This is impossible because the rank is one for LHS whereas $M$ for RHS.
 \end{document}
