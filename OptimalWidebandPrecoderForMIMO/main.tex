@@ -13,8 +13,8 @@
 
 \begin{document}
 \maketitle
-For a MIMO wireless communication, we have sampled transmit signal $x[n]\in\mathbb{C}^M$, receive signal $y[n]\in\mathbb{C}^N$, and a channel $h[n]\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^M\right)$ all with lengths $P$
-$$y[n]=\sum_{n-0}^{P-1}h[n]x[n]$$
+For a MIMO wireless communication, we have sampled transmit signal $x[n]\in\mathbb{C}^M$, receive signal $y[n]\in\mathbb{C}^N$, and a channel $h[n]\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^M\right)$ all with lengths $P$ and are related by $P$-point convolution
+$$y[n]=\sum_{m=0}^{P-1}h[m]x[n-m]$$
 And in the frequency domain we have
 $$Y[k]=H[k]X[k]$$
 where $k=0,\dots,P-1$.
