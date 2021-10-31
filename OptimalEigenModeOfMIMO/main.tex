@@ -58,7 +58,7 @@ which is a group of $r$ paralell scalar channels without interfering with each o
 	\end{eqnarray*}
 which completes the proof.
 \end{proof}
-Now our goal boils down to find an $S$ subject to an energy constraint maximizes $Z$ given $D$, which is a convex optimization problem
+Now our goal boils down to finding an $S$ subject to an energy constraint maximizes $Z$ given $D$, which is a convex optimization problem
 \begin{equation}
 	\begin{array}{ll}
 	\mbox{maximize}&s^*D^2s\\
@@ -92,16 +92,16 @@ and $v_y$, $u_y$, $v_x$ are defined in similar ways.
 
 We can see that the objective function of \ref{eqn s^*D^2s} is not differentiable. Indeed, $s^*D^2s$ is a real-valued funtion which means $v_x=v_y=0$, but this does not hold for $u_x$ and $u_y$.
 
-But if we restrict $s$ on ${\mathbb{R}_{\geq0}}^M$, it is not hard to see, by KKT condition, that the quadratic programming \ref{eqn s^*D^2s} can achieve the optimal value $\max_i \sigma_i^2$ with the optimal point being
+Note that restricting $s$ on ${\mathbb{R}_{\geq0}}^M$ does not change the optimal value of the objective function. It is not hard to see, by KKT condition, that the quadratic programming \ref{eqn s^*D^2s} restricted on ${\mathbb{R}_{\geq0}}^M$ can achieve the optimal value $$\max_ss^*D^2s=\max_i \sigma_i^2$$ with the optimal point s whose $i$-th component is
 $$
-s=\left\{ 
+s_i=\left\{ 
 \begin{matrix}
 	1&,i=\argmax_i\sigma_i\\
 	0&,\mbox{otherwise}	
 \end{matrix}
 \right.
 $$
-Then we extend the optimal points on $\mathbb{C}^M$. It is obvious that for any diagonal matrix $A$, the vector given by
+Then we extend the optimal points on $\mathbb{C}^M$. It is obvious that for any real diagonal matrix $A$, the vector given by
 $$w=e^{jA}s$$
 is also an optimal point.
 \end{document}
