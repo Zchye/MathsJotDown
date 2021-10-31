@@ -1,0 +1,107 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % This package is for creating hyper link-style corss references.
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{mathrsfs}
+\usepackage{amsfonts}
+\theoremstyle{remark}
+\newtheorem{claim}{Claim}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\title{Optimal Eigen Mode of MIMO}
+
+\begin{document}
+\maketitle
+
+For MIMO, in the frequency domain for a fixed frequency we have the transmit signal $X\in\mathbb{C}^M$ and recieve signal $Y\in \mathbb{C}^N$ and the channel matrix $H\in\mbox{Hom}\left(\mathbb{C}^M, \mathbb{C}^N\right)$ related by
+\begin{equation}
+Y=HX\label{eqn Y=HX}
+\end{equation}
+Our aim is to find an $X$ subject to an energy constraint maximizes $Y$ given $H$. 
+
+Assume the rank of $H$ is $r$, we apply compact SVD on $H$ to get
+\begin{equation}
+	H = UDV^*\label{eqn H = UDV^*}
+\end{equation}
+where $U\in\mbox{Hom}\left(\mathbb{C}^r,\mathbb{C}^N \right)$, $V\in\mbox{Hom}\left(\mathbb{C}^r,\mathbb{C}^M \right)$ satisfying $U^*U=I_N$ and $V^*V=I_M$, and
+$$
+D=\mbox{diag}\{\sigma_1,\dots,\sigma_r \}
+$$
+is a the diagonal matrix of singular values of $H$.
+
+With proper pre-processing
+$$X=VS$$
+and post-processing
+$$Z=U^*Y$$
+we have
+$$Z=U^*UDV^*VS=DS$$
+which is a group of $r$ paralell scalar channels without interfering with each other.
+\begin{claim}
+	Pre-multiplying $U^*$ and $V$ preserve energy.
+\end{claim}
+\begin{proof}
+	$$X^*X=S^*V^*VS$$
+	It follows from $$V^*V=I_M$$.
+	
+	The proof for $U^*$ involves a little bit more. We have
+	$$Z^*Z=Y^*UU^*Y$$
+	We partition $U$ into column vectors
+	$$U=\left[u^1,\dots,u^r \right]$$
+	where $u^i\in\mathbb{C}^N$ being mutually orthogonal. It follows from equation \ref{eqn Y=HX} and \ref{eqn H = UDV^*} that $\exists y^i\in\mathbb{C}$ s.t. 
+	$$Y=\sum_{i=1}^ry_iu^i$$
+	Hence
+	\begin{eqnarray*}
+		Y^*UU^*Y&=&\left(\sum_{i=1}^ry_i^*(u^i)^* \right)\left(\sum_{j=1}^ru^j(u^j)^* \right)\left(\sum_{k=1}^ry_ku^k\right)\\
+		&=&\sum_{i,j,k}y_i^*y_k\left((u^i)^*u^j\right)\left((u^j)^*u^k\right)\\
+		&=&\sum_{i,j,k}y_i^*y_k\delta_i^j\delta_j^k\\
+		&=&\sum_{i=1}^r|y_i|^2=Y^*Y
+	\end{eqnarray*}
+which completes the proof.
+\end{proof}
+Now our goal boils down to find an $S$ subject to an energy constraint maximizes $Z$ given $D$, which is a convex optimization problem
+\begin{equation}
+	\begin{array}{ll}
+	\mbox{maximize}&s^*D^2s\\
+	\mbox{subject to}&s^*s\leq1
+\end{array}\label{eqn s^*D^2s}
+\end{equation}
+However, for $s\in\mathbb{C}^r$, the objective function is not differentiable. To see this, we need to take a detour to discuss the condition of differentiability of operators between complex vector spaces.
+
+Pick any $f:\mathbb{C}^M\rightarrow\mathbb{C}^N$, then $f$ is differentiable at $z\in\mathbb{C}^M$ if and only if there exists a linear operator $\nabla f(z)\in\mbox{Hom}\left(\mathbb{C}^M,\mathbb{C}^N \right)$ such that
+\begin{equation}
+	\lim_{\Delta z\rightarrow0}\frac{f(z+\Delta z)-f(z)-\nabla f(z)\Delta z}{||\Delta z||}=0\label{eqn lim=0}
+\end{equation}
+Expand $f$ to be 
+\begin{equation}
+	f(z)=u(x,y)+iv(x,y)\label{eqn f=u+iv}
+\end{equation}
+where $z=x+iy$, and $x,y\in\mathbb{R}^M$, and $u,v:\mathbb{R}^M\times\mathbb{R}^M\rightarrow\mathbb{R}^N$.
+
+Equation \ref{eqn lim=0} implies the limit
+\begin{equation}
+	\lim_{\Delta z\rightarrow0}\frac{f(z+\Delta z)-f(z)}{||\Delta z||}\label{eqn lim exists}
+\end{equation}
+exists. Choose any $v\not=0$ and a $t\in\mathbb{R}$. Let $\Delta z=tv$, then $\Delta z\rightarrow0$ as $t\rightarrow0$. Substitute \ref{eqn f=u+iv} into \ref{eqn lim exists}, for $\Delta z$ either being $tv$ or $itv$, the limit should stay the same, which leads to a "quasi"-Cauchy-Riemann equations
+\begin{eqnarray*}
+	u_x&=&v_y\\
+	u_y&=&-v_x
+\end{eqnarray*}
+where $u_x$ is defined to be the unique linear operator in $\mbox{Hom}\left(\mathbb{R}^M,\mathbb{R}^N\right)$ such that
+$$\lim_{\Delta x\rightarrow0}\frac{u(x+\Delta x)-u(x)-u_x\Delta x}{||\Delta x||}=0$$
+and $v_y$, $u_y$, $v_x$ are defined in similar ways.
+
+We can see that the objective function of \ref{eqn s^*D^2s} is not differentiable. Indeed, $s^*D^2s$ is a real-valued funtion which means $v_x=v_y=0$, but this does not hold for $u_x$ and $u_y$.
+
+But if we restrict $s$ on ${\mathbb{R}_{\geq0}}^M$, it is not hard to see, by KKT condition, that the quadratic programming \ref{eqn s^*D^2s} can achieve the optimal value $\max_i \sigma_i^2$ with the optimal point being
+$$
+s=\left\{ 
+\begin{matrix}
+	1&,i=\argmax_i\sigma_i\\
+	0&,\mbox{otherwise}	
+\end{matrix}
+\right.
+$$
+Then we extend the optimal points on $\mathbb{C}^M$. It is obvious that for any diagonal matrix $A$, the vector given by
+$$w=e^{jA}s$$
+is also an optimal point.
+\end{document}
