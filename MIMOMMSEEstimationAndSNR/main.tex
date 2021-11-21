@@ -1,0 +1,240 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % This package is for creating hyper link-style corss references.
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{bm}
+\title{MIMO MMSE Esitmation And SNR}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+
+\begin{document}
+	\maketitle
+
+\section{Scalar Channel}
+We start from simple scalar case. We want to show an important formula
+\begin{equation}
+	\frac{\sigma_x^2}{\mbox{MMSE}}-1=\mbox{SNR}\label{MMSEvsSNR scalar}
+\end{equation}
+Consider a scalar channel relating the input $x$ and output $y$ by
+$$
+y = hx+w
+$$
+where $h$ is a known scalar (that's why it called scalar channel) and $x$, $w$ are zero-mean uncorrelated random scalars. They are all complex numbers.
+
+First we find the SNR. By definition
+\begin{equation}
+	\mbox{SNR} = \frac{\mathcal{E}\{|hx|^2\}}{\mathcal{E}\{|w|^2\}} = \frac{|h|^2\sigma_x^2}{\sigma_w^2} = \rho|h|^2
+	\label{SNR = rhoh^2}
+\end{equation}
+where we have defined the transmit SNR $\rho = \sigma_x^2/\sigma_w^2$.
+
+For LMMSE estimation, we are seeking an estimate of $x$, $\hat{x}=cy$, to minimize the mean square error $\mathcal{E}|\hat{x}-x|^2$. In other word, we are decomposing $x$ into
+\begin{equation}
+	x = cy+z\label{x = cy+z}
+\end{equation}
+and trying to find the $c$ to minimize $\sigma_z^2$.
+
+\begin{theorem}[Scalar version of orthogonality principle]
+	Given random variables $x$ and $y$, we decompose $x$ into $x=cy+z$ for some random $z$. If $\mathcal{E}zy^*=0$, then for any $a$ we have
+	$$\mathcal{E}|ay+z|^2\geq\sigma_z^2$$
+\end{theorem}
+\begin{proof}
+	Since $y$ and $z$ are orthogonal (uncorrelated)
+	$$\mathcal{E}|ay+z|^2=|a|^2\sigma_y^2+\sigma_z^2$$
+\end{proof}
+So we can apply orthogonality principle by taking correlation with $y$ on both sides of equation \ref{x = cy+z}
+$$\mathcal{E}xy^*=c\sigma_y^2$$
+Hence we get
+$$c=\frac{\sigma_{xy}}{\sigma_y^2}$$
+Now we can calculate the MMSE
+\begin{eqnarray*}
+	\mathcal{E}|cy-x|^2&=&\mathcal{E}(cy-x)(cy-x)^*\\
+	&=&|c|^2\sigma_y^2+\sigma_x^2-c\sigma_{yx}-c^*\sigma_{xy}
+\end{eqnarray*}
+Note that
+$$\sigma_{xy}^*=\left(\mathcal{E}xy^*\right)^*=\mathcal{E}yx^*=\sigma_{yx}$$
+we can simplify MMSE to be
+$$\mathcal{E}|cy-x|^2=\sigma_x^2-\sigma_{xy}\sigma_{yx}/\sigma_y^2$$
+Also note that
+$$\sigma_y^2=|h|^2\sigma_x^2+\sigma_w^2$$
+$$\sigma_{xy} = h^*\sigma_x^2$$
+we can further simplify MMSE
+\begin{eqnarray}
+	\mathcal{E}|cy-x|^2&=&\sigma_x^2-\frac{\sigma_x^4|h|^2}{\sigma_x^2|h|^2+\sigma_w^2}\nonumber\\
+	&=&\frac{\sigma_x^2\sigma_w^2}{\sigma_x^2|h|^2+\sigma_w^2}\nonumber\\
+	&=&\frac{\sigma_x^2}{\rho|h|^2+1}\label{MMSE expression}
+\end{eqnarray}
+Compare equations \ref{SNR = rhoh^2} and \ref{MMSE expression}, we get the relation between MMSE and SNR for scalar channel as in equation \ref{MMSEvsSNR scalar}.
+
+\section{Vector Channel}
+Before we study the LMMSE of vector channel, we first take a look at SNR. In scalar channel, it is obvious that linear estimators do not affect SNR, but it is not the case in vector channel.
+\subsection{Matched Filter}
+Consider a vector channel
+$$\bm{y}=\bm{h}x+\bm{w}$$
+where $\bm{h}$ is a known vector, $x$ is a zero-mean random scalar, $\bm{w}$ is a zero-mean random vector uncorrelated with $x$.
+
+We are still looking for a linear estimate of $x$
+\begin{equation}
+	\hat{x}=\langle \bm{y},\bm{c}\rangle=\bm{c}^*\bm{h}x+\bm{c}^*\bm{w}\label{xhat=<y,c>}
+\end{equation}
+for some vector $\bm{c}$.
+
+The SNR can be defined by
+\begin{equation}
+\gamma = \frac{\mathcal{E}||\bm{c}^*\bm{h}x||^2}{\mathcal{E}||\bm{c}^*\bm{w}||^2}=\frac{||\bm{c}^*\bm{h}||^2\sigma_x^2}{\bm{c}^*\bm{K_w}\bm{c}}\label{gamme definition for vector channel}
+\end{equation}
+where $\bm{K_w}$ is the covariance matrix of $\bm{w}$.
+
+The choice of $\bm{c}$ affects $\gamma$. To maximize $\gamma$, we define $\bm{d}=\bm{K_w}^{1/2}\bm{c}$ (the square root of a positive definite matrix is well-defined) and $\bm{h}'=\bm{K_w}^{-1/2}\bm{h}$ and substitute into equation \ref{gamme definition for vector channel}, then we get
+\begin{eqnarray}
+	\gamma&=&\frac{||\bm{d}^*\bm{h}'||^2\sigma_x^2}{||\bm{d}||^2}\nonumber\\
+	&\leq&\frac{||\bm{d}||^2||\bm{h}'||^2\sigma_x^2}{||\bm{d}||^2}\label{C-R Ineq for vector channel}\\
+	&=&||\bm{h}'||^2\sigma_x^2\nonumber\\
+	&=&\bm{h}^*\bm{K_w}^{-1}\bm{h}\sigma_x^2\label{max gamma for vector channel}
+\end{eqnarray}
+Equation \ref{max gamma for vector channel} does not depend on $\bm{c}$ and hence gives us the upper bound of $\gamma$. \ref{C-R Ineq for vector channel} is by Cauchy-Riemann inequality with the equality if $\bm{d}$ is parallel to $\bm{h}'$, that is, there exists a complex scalar $\lambda$ such that
+\begin{equation}
+	\bm{c}=\lambda\bm{K_w}^{-1}\bm{h}\label{c=lambdaK_w^-1h}
+\end{equation}
+Therefore, any linear estimator that achieves maximum SNR must satisfy equation \ref{c=lambdaK_w^-1h}. This class of linear estimators has a name called matched filter.
+
+Let's take a look at what is going on in the matched filter. Substitute equation \ref{c=lambdaK_w^-1h} into \ref{xhat=<y,c>} (WLOG, set $\lambda =1$) and we get
+$$\hat{x} = \bm{h}^*\bm{K_w}^{-1}\bm{h}x+\bm{h}^*\bm{K_w}^{-1}\bm{w}$$
+The noise $\bm{w}$ is first whitened by $\bm{K_w}^{-1}$ and then projected along $\bm{h}$. This has a good geometric interpretation. If the noise were white, i.e., $\bm{K_w}=\bm{I}$, then along any direction its energy stays the same, and the optimal linear estimator is of course by projecting the received signal onto the direction of the channel vector.
+
+\subsection{LMMSE For Vector Channel}
+There are two approaches to get the LMMSE estimator of vector channel. We will show that the results coincide.
+\subsubsection{Scalarized By Matched Filter}
+We can first scalarize the vector channel by taking inner product with some $\bm{c}$, and get $\mbox{MMSE}(\bm{c})$ and $\mbox{SNR}(\bm{c})$ by LMMSE for scalar channel. By equation \ref{MMSEvsSNR scalar}, the minimal $\mbox{MMSE}(\bm{c})$ over $\bm{c}$ can be found by making $\mbox{SNR}(\bm{c})$ maximal, and the optimal $\bm{c}$ is simply the matched filter.
+
+Choose an arbitrary $\bm{c}$, we get a scalar channel
+$$y'=h'x+w'$$
+where $y'=\langle \bm{y},\bm{c}\rangle$, $h'=\langle \bm{h},\bm{c}\rangle$, $w'=\langle \bm{w},\bm{c}\rangle$. The LMMSE estimator for this scalar channel is
+$$\lambda =\frac{\sigma_{xy'}}{\sigma_{y'}^2}= \frac{\sigma_x^2{h'}^*}{\sigma_x^2h'{h'}^*+\sigma_{w'}^2}=\frac{\sigma_x^2\bm{h}^*\bm{c}}{\bm{c}^*(\sigma_x^2\bm{h}\bm{h}^*+\bm{K_w})\bm{c}}$$
+We can choose an arbitrary matched filter from class \ref{c=lambdaK_w^-1h} such as 
+$$\bm{c}=\bm{K_w}^{-1}\bm{h}$$
+Hence the LMMSE estimator of vector channel is
+\begin{equation}
+	\bm{a}=\lambda^*\bm{c}=\frac{\sigma_x^2\bm{K_w}^{-1}\bm{h}\bm{h}^*\bm{K_w}^{-1}\bm{h}}{\bm{h}^*\bm{K_w}^{-1}\left(\sigma_x^2\bm{h}\bm{h}^*+\bm{K_w}\right)\bm{K_w}^{-1}\bm{h}}\label{a=lambda*c}
+\end{equation}
+where the conjugation of $\lambda$ is due to the fact that $\lambda\langle \bm{y},\bm{c}\rangle=\langle \bm{y},\lambda^*\bm{c}\rangle$.
+
+Since we are using matched filter, the resulting SNR is the same with equation \ref{max gamma for vector channel}. Also, as we are dealing with scalar channel, by equation \ref{MMSEvsSNR scalar}, the achieved LMMSE is
+$$\mbox{MMSE}=\frac{\sigma_x^2}{\gamma+1}=\frac{\sigma_x^2}{\sigma_x^2\bm{h}^*\bm{K_w}^{-1}\bm{h}+1}$$
+\subsubsection{Direct LMMSE For Vector Channel}
+\begin{theorem}[Vector version of orthogonality principle]
+	Given random scalar $x$ and vector $\bm{y}$, we decompose $x$ into 
+	\begin{equation}
+		x=\langle \bm{y},\bm{a}\rangle+z\label{x=<y,a>+z}
+	\end{equation}
+	for some random $z$. If $\mathcal{E}z\bm{y}^*=\bm{0}$, then for any $\bm{c}$ we have
+	$$\mathcal{E}|\langle \bm{y},\bm{c}\rangle+z|^2\geq\sigma_z^2$$
+\end{theorem}
+\begin{proof}
+	Since $\bm{y}$ and $z$ are uncorrelated, we have
+	$$\mathcal{E}|\langle \bm{y},\bm{c}\rangle+z|^2=\bm{c}^*\bm{K_y}\bm{c}+\sigma_z^2$$
+	it follows from the positive semi-definiteness of $\bm{K_y}$.
+\end{proof}
+To find the optimal $\bm{a}$, we correlate $\bm{y}$ with equation \ref{x=<y,a>+z} and get
+$$\mathcal{E}x\bm{y}^*=\bm{a}^*\bm{K_y}$$
+Hence we have
+\begin{equation}
+	\bm{a}=\bm{K_y}^{-1}\mathcal{E}\bm{y}x^*=\sigma_x^2\left(\sigma_x^2\bm{h}\bm{h}^*+\bm{K_w}\right)^{-1}\bm{h}\label{direct LMMSE vector channel}
+\end{equation}
+Next we will show that equation \ref{a=lambda*c} and \ref{direct LMMSE vector channel} coincide.
+
+Note that this is equivalent to justifying
+$$\left(\sigma_x^2\bm{h}\bm{h}^*+\bm{K_w}\right)\bm{K_w}^{-1}\bm{h}\bm{h}^*\bm{K_w}^{-1}\bm{h}=\bm{h}\bm{h}^*\bm{K_w}^{-1}\left(\sigma_x^2\bm{h}\bm{h}^*+\bm{K_w}\right)\bm{K_w}^{-1}\bm{h}$$
+This equation is due to the fact that $\left(\sigma_x^2\bm{h}\bm{h}^*+\bm{K_w}\right)\bm{K_w}^{-1}$ and $\bm{h}\bm{h}^*\bm{K_w}^{-1}$ commute, which is not hard to see by expanding the former.
+
+\section{Matrix Channel}
+A matrix channel is a MIMO channel given by
+\begin{equation}
+	\bm{y}=\bm{Hx}+\bm{w}\label{matrix channel}
+\end{equation}
+where $\bm{x}$ and $\bm{w}$ are zero-mean uncorrelated random vectors and are not necessarily of the same dimension, and $\bm{H}$ is a matrix.
+
+Again we will show two approaches to obtain LMMSE estimator, and prove that the two results coincide.
+\subsection{Matched Filter On Each Stream}
+Equation \ref{matrix channel} is in fact the sum of vector channels. To see this, assume the dimensions of $x$ and $y$ are $M$ and $N$ respectively. Then it can be rewritten as
+$$\bm{y}=\sum_{i=1}^M\bm{h}_ix^i+\bm{w}$$
+And hence the channel seen from the $k$-th stream is
+$$\bm{y}=\bm{h}_kx^k+\left(\sum_{i\not=k}\bm{h}_ix^i+\bm{w}\right)$$
+where the parenthesized noise term consists of pure noise plus interference from other streams. We denote it with $\bm{w}_k$. The LMMSE for vector channels can be applied on the $k$-th stream
+\begin{eqnarray}
+	\bm{a}_k&=&\sigma_{x_k}^2\left(\sigma_{x_k}^2\bm{h}_k\bm{h}_k^*+\bm{K}_{\bm{w}_k}\right)^{-1}\bm{h}_k\nonumber\\
+	&=& \sigma_{x_k}^2\left(\sigma_{x_k}^2\bm{h}_k\bm{h}_k^*+\sum_{(i,j)\not=(k,k)}\sigma_{x_ix_j}\bm{h}_i\bm{h}_j^*+\bm{K_w}\right)^{-1}\bm{h}_k\nonumber\\
+	&=&\sigma_{x_k}^2\left(\sum_{i,j}\sigma_{x_ix_j}\bm{h}_i\bm{h}_j^*+\bm{K_w}\right)^{-1}\bm{h}_k\nonumber\\
+	&=&\sigma_{x_k}^2\left(\bm{HK_xH}^*+\bm{K_w}\right)^{-1}\bm{h}_k\label{a_k}
+\end{eqnarray}
+By equation \ref{max gamma for vector channel}, the SNR of stream $k$ is 
+\begin{equation}
+	\gamma_k=\sigma_{x_k}^2\bm{h}_k^*\left(\sum_{(i,j)\not=(k,k)}\sigma_{x_ix_j}\bm{h}_i\bm{h}_j^*+\bm{K_w}\right)^{-1}\bm{h}_k\label{gamma_k matched filter on stream}
+\end{equation}
+
+\subsection{Direct LMMSE For Matrix Channel}
+\begin{theorem}[Matrix version of orthogonality principle]
+	Given zero-mean random vectors $\bm{x}$ and $\bm{y}$ which are not necessarily of the same dimension, we decompose $\bm{x}$ into
+	\begin{equation}
+		\bm{x} = \bm{Ay}+\bm{z}\label{x=Ay+z}
+	\end{equation}
+	for some random vector $\bm{z}$. If $\mathcal{E}\bm{z}\bm{y}^*=\bm{0}$, then for any $\bm{G}$ (dimension compatible with $x$ and $y$) we have
+	$$\mbox{Cov}(\bm{Gy}+\bm{z})\succeq\bm{K_z}$$
+	where $\mbox{Cov}(\cdot)$ denotes taking covariance matrix, $\succeq$ is the partial ordering induced by positive semi-definite cone.
+\end{theorem}
+\begin{proof}
+	Since $\bm{z}$ and $\bm{y}$ are uncorrelated, we have
+	$$\mbox{Cov}(\bm{Gy}+\bm{z})=\bm{G}\bm{K_y}\bm{G}^*+\bm{K_z}$$
+	The proof follows from the positive semi-definiteness of $\bm{G}\bm{K_y}\bm{G}^*$.
+\end{proof}
+We take correlation with $\bm{y}$ on both sides of equation \ref{x=Ay+z} to get
+\begin{equation}
+	\bm{A}=\mathcal{E}\bm{x}\bm{y}^*\bm{K_y}^{-1}\label{A=ExyKy^-1}
+\end{equation}
+substitute with equation \ref{matrix channel}
+\begin{equation}
+	\bm{A} = \bm{K_xH}^*\left(\bm{HK_xH^*}+\bm{K_w}\right)^{-1}
+\end{equation}
+\begin{claim}[Matrix LMMSE]
+	The LMMSE of the matrix channel \ref{matrix channel} is
+	\begin{equation}
+		\mbox{MMSE} = \bm{K_x}-\mathcal{E}\bm{xy}^*\bm{K_y}^{-1}\mathcal{E}\bm{yx}^*\label{MMSE=Kx - ExyKy^-1Eyx}
+	\end{equation}
+\end{claim}
+\begin{proof}
+	Simply substitute equation \ref{A=ExyKy^-1} into $\mbox{Cov}(\bm{x}-\bm{Ay})$.
+\end{proof}
+We can expand equation \ref{MMSE=Kx - ExyKy^-1Eyx} into
+$$\mbox{MMSE}=\bm{K_x}-\bm{K_xH}^*\left(\bm{HK_xH}^*+\bm{K_w}\right)^{-1}\bm{HK_x}$$
+Apply matrix inversion identity (without proof)
+$$(A+BCD)^{-1}=A^{-1}-A^{-1}B(C^{-1}+DA^{-1}B)^{-1}DA^{-1}$$
+with $A=\bm{K_x}^{-1}$, $B=\bm{H}^*$, $C=\bm{K_w}^{-1}$, $D=\bm{H}$, and we arrive at
+$$\mbox{MMSE}=\left(\bm{K_x}^{-1}+\bm{H}^*\bm{K_w}^{-1}\bm{H}\right)^{-1}$$
+We have to admit that this simplification is tricky.
+
+The MMSE for $k$-th stream is by definition
+$$\mathcal{E}\left|[\bm{x}]^k-[\bm{Ay}]^k\right|^2=\left[\mbox{Cov}(\bm{x}-\bm{Ay})\right]_k^k$$
+Therefore the SNR of $k$-th stream is
+\begin{equation}
+\gamma_k = \frac{\sigma_{x_k}^2}{\left[\left(\bm{K_x}^{-1}+\bm{H}^*\bm{K_w}^{-1}\bm{H}\right)^{-1}\right]_k^k}-1\label{gamma_k diagonal}
+\end{equation}
+
+Next we will show the equivalence between two approaches. Let $\bm{e}_k$ be the $k$-th standard basis vector, then the estimate of $x_k$ is 
+\begin{eqnarray}
+	\hat{x}_k&=&\bm{e}_k^*\hat{\bm{x}}\nonumber\\
+	&=&\bm{e}_k^*\bm{Ay}\nonumber\\
+	&=&\bm{e}_k^*\mathcal{E}\bm{xy}^*\bm{K_y}^{-1}\bm{y}\nonumber\\
+	&=&\mathcal{E}\bm{e}_k^*\bm{xy}^*\bm{K_y}^{-1}\bm{y}\nonumber\\
+	&=&\mathcal{E}x_k\bm{y}^*\bm{K_y}^{-1}\bm{y}\nonumber\\
+	&=&\sigma_{x_k}^2\bm{h}_k^*\left(\bm{HK_xH}^*+\bm{K_w}\right)^{-1}\bm{y}\label{hatx_k}
+\end{eqnarray}
+Compared to equation \ref{a_k}, equation \ref{hatx_k} is exactly
+$$\hat{x}_k=\bm{a}_k^*\bm{y}$$
+This implies that taking MMSE with respect to positive semi-definite partial ordering is equivalent to taking MMSE for each stream, which further justifies the coincidence between equation \ref{gamma_k diagonal} and \ref{gamma_k matched filter on stream}, even though the two $\gamma_k$'s look far away from each other.
+\end{document}
