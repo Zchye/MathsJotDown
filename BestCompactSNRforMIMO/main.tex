@@ -1,0 +1,175 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % This package is for creating hyper link-style corss references.
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{tikz-cd} % For plotting commutative diagrams
+\title{Best Compact SNR For MIMO}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\DeclareMathOperator{\tr}{tr} % trace symbol
+
+\begin{document}
+\maketitle
+In this article we want to find the best compact achievable SNR for MIMO and its condition.
+\section{Definition Of Compact SNR For MIMO Channel}
+There are several definitions for the SNR of a MIMO channel and they are not necessarily equivalent. For example, we can define effective SNR to be
+$$
+\mbox{SNR}_{\mbox{eff}}=2^{\sum_i\log(1+\mbox{SNR}_i)}-1=\prod_i(1+\mbox{SNR}_i)-1
+$$
+where $\mbox{SNR}_i$ is the SNR for the $i$-th (scalar) stream.
+
+MATLAB 5G Toolbox\textsuperscript{\texttrademark} uses another weird definition, which I would name it sum SNR, defined by
+$$
+\mbox{SNR}_{\mbox{MATLAB}}=\sum_i\mbox{SNR}_i
+$$
+And they use this SNR to compute the BLER-SNR curve. The physical interpretation of the sum SNR is not clear to us yet. Maybe MATLAB have their reasons.
+
+But in the following we will define our so called compact SNR which makes good senses to us. Consider a MIMO channel
+$$y=Hx+w$$
+where $y$ and $w$ are vectors of the same dimension, $x$ is of another dimension not necessarily the same with the former two, and the size of $H$ is compatible with them. After linear estimation by an estimator $G$, we have
+$$\hat{x}=Gy=GHx+Gw$$
+The (equalized) compact SNR of the MIMO channel is defined by
+\begin{equation}
+\gamma_{\mbox{cp}}=\frac{\mathcal{E}||GHx||^2}{\mathcal{E}||Gw||^2}\label{gamma_cp definition}	
+\end{equation}
+So our goal is to find the $G$ to maximize $\gamma_{\mbox{cp}}$. 
+
+We expand equation \ref{gamma_cp definition} into 
+\begin{eqnarray}
+	\gamma_{\mbox{cp}}&=&\frac{\mathcal{E}(x^*H^*G^*GHx)}{\mathcal{E}(w^*G^*Gw)}\nonumber\\
+	&=& \frac{\mathcal{E}\mbox{tr}(GHxx^*H^*G^*)}{\mathcal{E}\mbox{tr}(Gww^*G^*)}\nonumber\\
+	&=&\frac{\mbox{tr}(GH\mathcal{E}(xx^*)H^*G^*)}{\mbox{tr}(G\mathcal{E}(ww^*)G^*)}\nonumber\\
+	&=&\frac{\mbox{tr}(GHK_xH^*G^*)}{\mbox{tr}(GK_wG^*)}\label{gamma_cp expanded}
+\end{eqnarray}
+Let $C=GK_w^{1/2}$ and substitute it into \ref{gamma_cp expanded} and we get
+\begin{equation}
+	\gamma_{\mbox{cp}}=\frac{\mbox{tr}(CK_w^{-1/2}HK_xH^*K_w^{-1/2}C^*)}{\mbox{tr}(CC^*)}=\frac{\mbox{tr}(CAC^*)}{\mbox{tr}(CC^*)}\label{gamma_cp simpified}
+\end{equation}
+where we have defined $A=K_w^{-1/2}HK_xH^*K_w^{-1/2}$ for simplification.
+
+Now the question becomes finding the $C$ that maximizes \ref{gamma_cp simpified}.
+We will adopt two approaches and see that they lead to the same result.
+
+\section{Setting Derivatives To Zero}
+
+A brute force way to find the extreme value of a function is taking the derivatives and setting it to zero. But here things need to be treated carefully as we are dealing with matrices or even complex ones.
+
+\subsection{Derivatives Of Traces}
+
+In recent years with the rising of machine learning, more and more people on the internet start to talk about taking derivatives with respect to matrices. The most mentioned reference they use to support their calculation is {\it The  Matrix Cookbook}. This book defines derivatives by the partial derivatives of each component. And many books in communication engineering or related subjects follow similar ways. Personally I do not like the way they define derivatives w.r.t. matrices. Because those definitions do not reveal the algebraic (or geometric) nature of derivatives. 
+
+From the algebraic point of view, derivatives have a simple, concrete, unified definition that can be applied to any kind of functions. Consider the general case. An operator $F$ maps from vector spaces $V$ to $W$
+% https://q.uiver.app/?q=WzAsMixbMCwwLCJWIl0sWzEsMCwiVyJdLFswLDEsIkYiXV0=
+\[\begin{tikzcd}
+	V & W
+	\arrow["F", from=1-1, to=1-2]
+\end{tikzcd}\]
+At a point $x\in V$, $F$ induces a linear map $f(x)\in\mbox{Hom}\left(V,W\right)$
+% https://q.uiver.app/?q=WzAsMixbMCwwLCJUX3hNIl0sWzEsMCwiVF97Rih4KX1OIl0sWzAsMSwiZiJdXQ==
+\[\begin{tikzcd}
+	V & W
+	\arrow["f(x)", from=1-1, to=1-2]
+\end{tikzcd}\]
+and is defined by
+\begin{equation}
+	\lim_{\Delta x\rightarrow0}\frac{F(x+\Delta x)-F(x)-f(x)[\Delta x]}{||\Delta x||}=0\label{matrix deriv definition}
+\end{equation}
+where $f(x)[\Delta x]$ means applying the linear map $f(x)$ on $\Delta x$ and $||\cdot||$ is an arbitrary norm. It is easy to see that under this definition
+\begin{equation}
+	\nabla_x\left(x^TAx\right)=2x^TA\label{D xTAx}
+\end{equation}
+where $x$ could be a scalar or vector or even matrix.
+
+Go back to functions of matrices. Denote the derivatives of $F(X)$ with $f(X)$, then we study the derivatives of traces.
+
+First let us consider a simple case. Find $\nabla_X\tr(F(X))$.
+
+It follows that
+\begin{eqnarray*}
+\tr(F(X+\Delta X))&=&\tr(F(X)+f(X)[\Delta X])+o(\Delta X)\\
+&=&\tr(F(X))+\tr(f(X)[\Delta X])+o(\Delta X)
+\end{eqnarray*}
+Hence $\nabla_X\tr(F(X))$ is given by
+\begin{equation}
+	\nabla_X\tr(F(X))[Y]=\tr(f(X)[Y])\label{D trF(X)}
+\end{equation}
+for any $Y$ in the domain. Unlike equation \ref{D xTAx}, here we cannot write the derivatives as a matrix under our definition \ref{matrix deriv definition}, it is still a linear map though. In books including {\it The Matrix Cookbook} the derivatives can be represented by matrices under their definitions. But they do not fit well in the sense of algebra.
+
+Next we will show an result that is relevant to the optimization problem \ref{gamma_cp simpified}.
+\begin{claim}
+	Let $f$ and $g$ be the respective derivatives of $F$ and $G$ that take matrices as input. Then for any $Y$ in the domain of $\frac{\tr(F(X))}{\tr(G(X))}$, we have
+	\begin{equation}
+		\nabla_X\left\{\frac{\tr(F(X))}{\tr(G(X))}\right\}[Y]=\tr\left\{\frac{\tr(G(X))f(X)[Y]-\tr(F(X))g(X)[Y]}{\tr(G(X))^2}\right\}\label{D trF(X)/trG(X)}
+	\end{equation}
+\end{claim}
+\begin{proof}
+	Substitute $$\tr(F(X+\Delta X))=\tr(F(X))+\tr(f(X)[\Delta X])+o(\Delta X)$$ and $$\tr(G(X+\Delta X))=\tr(G(X))+\tr(g(X)[\Delta X])+o(\Delta X)$$ into
+	$$
+	\frac{\tr(F(X+\Delta X))}{\tr(G(X+\Delta X))}-\frac{\tr(F(X))}{\tr(G(X))}
+	$$
+	and the rest are just tedious calculations.
+\end{proof}
+
+\subsection{Optimal Solutions}
+We find the solution to \ref{gamma_cp simpified} by setting the derivatives to zero. Note that equating \ref{D trF(X)/trG(X)} to zero is equivalent to setting
+\begin{equation}
+	\tr(G(X))f(X)=\tr(F(X))g(X)\label{trGf=trFg}
+\end{equation}
+To apply equation \ref{trGf=trFg} on \ref{gamma_cp simpified}, we can form the correspondence: $X=C^*$, $F(X)=X^*AX$, $G(X)=X^*X$. 
+
+Special care should be taken here because we are playing with complex matrices. So we have to check the differentiability in the first place. Unfortunately, usually the functions involve conjugation are not complex differentiable. 
+
+We restrict our problem to be on real matrices. By equation \ref{D xTAx}, we have
+$$
+f(X)=2X^TA
+$$
+and $$g(X)=2X^T$$
+Substitute them into equation \ref{trGf=trFg} and after some calculation we get
+$$AX=\frac{\tr F(X)}{\tr G(X)}X$$
+Look back at equation \ref{gamma_cp simpified}, this is exactly
+\begin{equation}
+	AX=\gamma_{\mbox{cp}}X\label{AX=gamma_cpX}
+\end{equation}
+It becomes interesting. We see that the columns of $X$ should be the eigenvectors (including zero vectors) of $A$ and all belong to a same eigenvalue. What's more, the maximum achievable SNR is just the maximal eigenvalue of $A$. From \ref{gamma_cp simpified}, the positive semi-definiteness of $A$ ensures that all eigenvalues are non-negative.
+
+Note also that for any diagonal matrices (could be complex) $D$, if $X$ is a solution to \ref{AX=gamma_cpX}, then $Xe^{jD}$ is also a solution. Indeed, multiplying each column of $X$ by a complex number does not affect the vectors being eigen.
+\section{Spectral Decomposition Theorem}
+
+We are going to solve the optimization problem in a similar way as the proof for Rayleigh-Ritz Theorem (Not Rayleigh-Ritz Method appeared on Wikipedia). which relies on Spectral Decomposition Theorem. We state it without proof
+\begin{theorem}[Spectral Decomposition Theorem]
+	If real matrix $A$ is symmetric (or Hermitian if complex), then there exists an orthogonal (or unitary if complex) matrix whose column vectors are all eigenvectors of $A$.  
+\end{theorem}
+
+Since $A$ is positive semi-definite (actually Hermitian would suffice), by spectral decomposition theorem, the eigenvalue decomposition and SVD coincide
+$$A=U\Lambda U^*$$
+Let $S=UC^*$, then equation \ref{gamma_cp simpified} becomes
+$$\gamma_{\mbox{cp}}=\frac{\tr(S^*\Lambda S)}{\tr(S^*S)}$$
+Let $s_i$ denotes the $i$-th column vector of $S$ and $\lambda_i$ denotes the eigenvalue of $\Lambda$ corresponding to $s_i$ (be careful, $\lambda_i$ is not necessarily the $i$-th diagonal entry of $\Lambda$), then we have
+$$\gamma_{\mbox{cp}}=\frac{\sum_i\lambda_is_i^*s_i}{\sum_is_i^*s_i}$$ 
+which is the weighted average of $\{\lambda_i\}$ with the weights $\{s_i^*s_i\}$.
+
+Apparently, 
+$$\gamma_{\mbox{cp}}\leq \lambda_{\mbox{max}}$$
+with equality if $\lambda_i=\lambda_{\mbox{max}}$ for all $i$'s. In other word, all $s_i$'s have the same eigenvalue which is the maximum one.
+
+Therefore we see that the results of the two approaches are identical.
+
+To summarize. The procedure to construct a linear decoder that maximizes compact SNR for MIMO is:
+\begin{enumerate}
+	\item Apply eigenvalue decomposition (or SVD) on $K_w^{-1/2}HK_xH^*K_w^{-1/2}$ and find the maximum eigenvalue with the corresponding eigenvectors;
+	\item Arrange the eigenvectors include zero vector in an arbitrary way to form a matrix $Q$ (dimension compatible with the MIMO channel);
+	\item The decoding matrix is then given by
+	$$G=Q^*K_w^{-1/2}$$
+\end{enumerate}
+
+The resulting $G$ is definitely not unique since we can scale the eigenvectors and arrange them at will if there are no further restrictions.
+
+
+\end{document}
