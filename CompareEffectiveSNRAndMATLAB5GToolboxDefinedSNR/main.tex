@@ -1,0 +1,72 @@
+\documentclass[12pt]{article}
+\usepackage{hyperref} % This package is for creating hyper link-style corss references.
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{tikz-cd} % For plotting commutative diagrams
+\title{Compare Effective SNR and MATLAB 5G Toolbox-Defined SNR}
+
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{claim}{Claim}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\DeclareMathOperator{\tr}{tr} % trace symbol
+
+\begin{document}
+\maketitle
+In MATLAB 5G Toolbox function hPrecodedSINR.m, the SNR  is defined to be the sum of SNR's of each MIMO stream. We do not like this definition because the physical or algebraic meaning of adding two SNR's is not clear to us. We prefer another definition of SNR, which we will name effective SNR.
+
+\begin{definition}
+	Let $\gamma_i$ be the SNR of $i$-th stream in a MIMO channel, then the effective SNR $\gamma_e$ is
+	\begin{equation}
+		\gamma_e = 2^C-1 \label{gamma_e = 2^C-1}
+	\end{equation}
+	where $C=\sum_i\log(1+\gamma_i)$, the $\log$ is 2-based.
+\end{definition}
+In other words, the effective SNR is defined to be the SNR of a virtual SISO channel as if the capacity of the MIMO channel under question were achieved upon. We like this definition because the summation of capacities makes good sense in information theory.
+
+Here we also state the definition of SNR in MATLAB 5G Toolbox.
+\begin{definition}
+	The SNR $\gamma_M$ in MATLAB 5G Toolbox function hPrecodedSINR.m is defined by
+	$$\gamma_M = \sum_i\gamma_i$$
+\end{definition}
+
+The aim of this article is to show the following inequality
+\begin{equation}
+	\gamma_e > \gamma_M \label{gamma_e > gamma_M}
+\end{equation}
+
+Let $f(x) = \log(1+x)$, then $f(x)$ is obviously invertible, concave, differentiable and also satisfies
+$$f(0)=0$$
+
+Hence we can view equation (\ref{gamma_e = 2^C-1}) through another approach
+$$\gamma_e = f^{-1}\left(\sum_if(1+\gamma_i)\right)$$
+
+Since $f(x)$ is monotonically increasing, we can readily prove equation (\ref{gamma_e > gamma_M}) by showing that
+\begin{equation}
+	f\left(\sum_i\gamma_i\right)<\sum_if(\gamma_i) \label{fsum<sumf}
+\end{equation}
+
+To prove equation (\ref{fsum<sumf}), we first prove a lemma
+\begin{lemma}
+	If $f(x)$ is strictly concave, twice differentiable, monotonically increasing and satisfies $f(0)=0$, then for any positive $x$, $y$
+	$$f(x+y)<f(x)+f(y)$$ \label{lemma}
+\end{lemma}
+\begin{proof}
+	$f$ concave and twice differentiable\\
+	$\Rightarrow$ $f''(x)<0$\\	
+	$\Rightarrow$ $f'(x)$ strictly decreasing\\	
+	Also, $y>0$\\	
+	$\Rightarrow$ $\forall t>0$, $f'(t+y)<f'(t)$\\	
+	$\Rightarrow$ $\int_0^xf'(t+y)\mbox{d}t<\int_0^xf'(t)\mbox{d}t$\\
+	Note that $\int_0^xf'(t+y)\mbox{d}t=\int_y^{x+y}f'(t)\mbox{d}t=f(x+y)-f(y)$\\
+	and that $\int_0^xf'(t)\mbox{d}t=f(x)$\\
+	$\Rightarrow$ $f(x+y)-f(y)<f(x)$\\
+	which completes the proof.
+\end{proof}
+
+Then equation (\ref{fsum<sumf}) can be proved with lemma \ref{lemma} by induction.
+\end{document}
